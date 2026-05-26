@@ -41,7 +41,7 @@ const DEFAULT_DASHBOARD = {
 };
 
 async function callClaude(userMsg, maxTokens=1500) {
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
+  const r = await fetch("/api/claude", {
     method:"POST", headers:{"Content-Type":"application/json"},
     body:JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:maxTokens, messages:[{role:"user",content:userMsg}] })
   });
