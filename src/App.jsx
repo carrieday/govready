@@ -41,7 +41,7 @@ const DEFAULT_DASHBOARD = {
 };
 
 async function callClaude(userMsg, maxTokens=1500) {
-  const r = await fetch("/api/claude", {
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
     method:"POST", headers:{"Content-Type":"application/json"},
     body:JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:maxTokens, messages:[{role:"user",content:userMsg}] })
   });
@@ -80,7 +80,6 @@ export default function GovReady() {
   const [samTab, setSamTab] = useState("list");
   const [draft, setDraft] = useState("");
   const [draftLoading, setDraftLoading] = useState(false);
-const [draftOpp, setDraftOpp] = useState(null);
   const [dashboard, setDashboard] = useState(DEFAULT_DASHBOARD);
   const [capForm, setCapForm] = useState({agency:"",scope:"",differentiator:""});
   const [capResult, setCapResult] = useState("");
@@ -93,21 +92,18 @@ const [draftOpp, setDraftOpp] = useState(null);
   const toggleAction = (id) => setDashboard(d=>({...d,actions:d.actions.map(a=>a.id===id?{...a,done:!a.done}:a)}));
 
   const saveSamKey = () => {
+    if (!samKeyInput.trim()) return;
     setSamKey(samKeyInput.trim());
     setShowKeyPanel(false);
     setSamStatus("API key saved. Click Run Scan to search live opportunities.");
   };
 
   const runDemo = () => {
-  setSamSelected(null);
-  setDraft("");
-  setSamTab("list");
-  setSamFilter("ALL");
-  setDemoMode(true);
-  setSamOpps(DEMO_OPPS);
-  setSamLastRun(new Date().toLocaleString());
-  setSamStatus("Demo mode — showing sample opportunities. Add your SAM.gov API key for live data.");
-};
+    setDemoMode(true);
+    setSamOpps(DEMO_OPPS);
+    setSamLastRun(new Date().toLocaleString());
+    setSamStatus("Demo mode — showing sample opportunities. Add your SAM.gov API key for live data.");
+  };
 
   const quickScore = (o) => {
     let s = 0;
@@ -134,9 +130,8 @@ const [draftOpp, setDraftOpp] = useState(null);
       const now = new Date();
       const from = new Date(now);
       from.setDate(from.getDate()-7);
-      const pad = n => String(n).padStart(2,'0');
-const fromStr = `${from.getMonth()+1}/${pad(from.getDate())}/${from.getFullYear()}`;
-const toStr = `${now.getMonth()+1}/${pad(now.getDate())}/${now.getFullYear()}`;
+      const fromStr = from.toISOString().split("T")[0].replace(/-/g,"/");
+      const toStr = now.toISOString().split("T")[0].replace(/-/g,"/");
       const url = `https://api.sam.gov/prod/opportunities/v2/search?api_key=${samKey.trim()}&limit=50&postedFrom=${fromStr}&postedTo=${toStr}&naics=541611&active=true`;
       const r = await fetch(url);
       if (!r.ok) throw new Error(`SAM.gov error ${r.status} — verify your API key is active`);
@@ -157,7 +152,6 @@ const toStr = `${now.getMonth()+1}/${pad(now.getDate())}/${now.getFullYear()}`;
   }, [samKey]);
 
   const generateDraft = useCallback(async (opp) => {
-    setDraftOpp(opp);
     setDraftLoading(true); setDraft(""); setSamTab("draft");
     try {
       const text = await callClaude(`Write a professional federal Sources Sought capability statement response for this opportunity on behalf of a change management consulting firm.
@@ -471,12 +465,14 @@ Include: Executive Summary, Technical Approach, Management Approach, Past Perfor
 
             {samTab==="draft"&&(
               <div style={{flex:1,overflowY:"auto",padding:24}}>
-                <div className="label" style={{marginBottom:12}}>{draftOpp?`DRAFT — ${draftOpp.title}`:"SELECT AN OPPORTUNITY FIRST"}</div>
-                {draftLoading&&<div className="muted" style={{padding:"40px 0"}}>Generating with Claude AI...</div>}
-                {!draftLoading&&draft&&<div><textarea className="inp" value={draft} onChange={e=>setDraft(e.target.value)} rows={28}/><div style={{display:"flex",gap:8,marginTop:10}}><button className="btn-primary" onClick={()=>navigator.clipboard.writeText(draft)}>Copy</button><button className="btn-ghost" onClick={()=>{setDraft("");setSamTab("list");}}>← Back</button></div></div>}
-                {!draftLoading&&!draft&&<div className="muted">Select an opportunity and click Draft Response to generate a capability statement.</div>}
+                <div className="label" style={{marginBottom:12}}>{samSelected?`DRAFT — ${samSelected.title}`:"SELECT AN OPPORTUNITY FIRST"}</div>
+                {draftLoading?<div className="muted" style={{padding:"40px 0"}}>Generating with Claude AI...</div>
+                :draft?<div><textarea className="inp" value={draft} onChange={e=>setDraft(e.target.value)} rows={28}/><div style={{display:"flex",gap:8,marginTop:10}}><button className="btn-primary" onClick={()=>navigator.clipboard.writeText(draft)}>Copy</button><button className="btn-ghost" onClick={()=>{setDraft("");setSamTab("list");}}>Back</button></div></div>
+                :<div className="muted">Select an opportunity and click Draft Response to generate a capability statement.</div>}
               </div>
             )}
+          </div>
+        )}
 
         {/* CAPABILITY STATEMENT */}
         {page==="capstat"&&(
