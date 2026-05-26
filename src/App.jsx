@@ -471,7 +471,7 @@ Include: Executive Summary, Technical Approach, Management Approach, Past Perfor
 
             {samTab==="draft"&&(
               <div style={{flex:1,overflowY:"auto",padding:24}}>
-                <div className="label" style={{marginBottom:12}}>{samSelected?`DRAFT — ${samSelected.title}`:"SELECT AN OPPORTUNITY FIRST"}</div>
+                <div className="label" style={{marginBottom:12}}>{draftOpp?`DRAFT — ${draftOpp.title}`:"SELECT AN OPPORTUNITY FIRST"}
                 {draftLoading?<div className="muted" style={{padding:"40px 0"}}>Generating with Claude AI...</div>
                 :draft?<>
                   <textarea className="inp" value={draft} onChange={e=>setDraft(e.target.value)} rows={28}/>
@@ -479,7 +479,7 @@ Include: Executive Summary, Technical Approach, Management Approach, Past Perfor
                     <button className="btn-primary" onClick={()=>navigator.clipboard.writeText(draft)}>Copy</button>
                     <button className="btn-ghost" onClick={()=>{setDraft("");setSamTab("list");}}>← Back</button>
                   </div>
-                </>:<div className="muted">Select an opportunity and click "✦ Draft Response" to generate a capability statement.</div>}
+                </>:draftOpp?null:<div className="muted">Select an opportunity and click "✦ Draft Response" to generate a capability statement.</div>}
               </div>
             )}
           </div>
