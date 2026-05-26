@@ -80,6 +80,7 @@ export default function GovReady() {
   const [samTab, setSamTab] = useState("list");
   const [draft, setDraft] = useState("");
   const [draftLoading, setDraftLoading] = useState(false);
+const [draftOpp, setDraftOpp] = useState(null);
   const [dashboard, setDashboard] = useState(DEFAULT_DASHBOARD);
   const [capForm, setCapForm] = useState({agency:"",scope:"",differentiator:""});
   const [capResult, setCapResult] = useState("");
@@ -156,6 +157,7 @@ const toStr = `${now.getMonth()+1}/${pad(now.getDate())}/${now.getFullYear()}`;
   }, [samKey]);
 
   const generateDraft = useCallback(async (opp) => {
+    setDraftOpp(opp);
     setDraftLoading(true); setDraft(""); setSamTab("draft");
     try {
       const text = await callClaude(`Write a professional federal Sources Sought capability statement response for this opportunity on behalf of a change management consulting firm.
