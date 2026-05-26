@@ -75,7 +75,7 @@ function priorityStyle(p) {
 
 export default function GovReady() {
   const [page, setPage] = useState("dashboard");
-  const [samKey, setSamKey] = useState(()=>localStorage.getItem(SAM_KEY_STORE)||"");
+  const [samKey, setSamKey] = useState("");
   const [samKeyInput, setSamKeyInput] = useState("");
   const [showKeyPanel, setShowKeyPanel] = useState(false);
   const [samOpps, setSamOpps] = useState(()=>{try{return JSON.parse(localStorage.getItem(SAM_RESULTS_STORE)||"[]")}catch{return []}});
@@ -101,7 +101,6 @@ export default function GovReady() {
 
   const saveSamKey = () => {
     if (!samKeyInput.trim()) return;
-    localStorage.setItem(SAM_KEY_STORE, samKeyInput.trim());
     setSamKey(samKeyInput.trim());
     setShowKeyPanel(false);
     setSamStatus("API key saved. Click Run Scan to search live opportunities.");
