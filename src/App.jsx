@@ -92,7 +92,6 @@ export default function GovReady() {
   const toggleAction = (id) => setDashboard(d=>({...d,actions:d.actions.map(a=>a.id===id?{...a,done:!a.done}:a)}));
 
   const saveSamKey = () => {
-    if (!samKeyInput.trim()) return;
     setSamKey(samKeyInput.trim());
     setShowKeyPanel(false);
     setSamStatus("API key saved. Click Run Scan to search live opportunities.");
@@ -100,7 +99,8 @@ export default function GovReady() {
 
   const runDemo = () => {
     setDemoMode(true);
-    setSamOpps(DEMO_OPPS);
+    setSamOpps([]);
+    setTimeout(() => setSamOpps(DEMO_OPPS), 50);
     setSamLastRun(new Date().toLocaleString());
     setSamStatus("Demo mode — showing sample opportunities. Add your SAM.gov API key for live data.");
   };
