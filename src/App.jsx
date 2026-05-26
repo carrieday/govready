@@ -1,10 +1,6 @@
 import { useState, useCallback } from "react";
 
 const VERSION = "1.0";
-const SAM_KEY_STORE = "gr_sam_key";
-const SAM_RESULTS_STORE = "gr_sam_results";
-const SAM_LASTRUN_STORE = "gr_sam_lastrun";
-const DASHBOARD_STORE = "gr_dashboard";
 
 const PRIORITY_NOTICE_TYPES = ["Sources Sought", "Special Notice", "Presolicitation"];
 const TARGET_AGENCIES = ["VA","HHS","CMS","DHS","OPM","SSA","DOD","VETERANS","HEALTH","HOMELAND","PERSONNEL"];
@@ -17,16 +13,15 @@ const NAV = [
 ];
 
 const DEMO_OPPS = [
-  { noticeId:"d1", title:"Organizational Change Management Support for EHR Modernization", type:"Sources Sought", department:"DEPARTMENT OF VETERANS AFFAIRS", subTier:"Veterans Health Administration", postedDate:"2026-04-10", responseDeadLine:"2026-05-15T17:00:00", naicsCode:"541611", _score:97, _analysis:{ relevanceScore:97, priority:"HIGH", whyRelevant:"Exact match — OCM support for VHA EHR modernization. ADKAR methodology is purpose-built for large-scale IT-driven change. Delta's workforce transformation experience maps directly to clinical and administrative staff impacts.", keyRequirements:["Organizational change management methodology (ADKAR/Prosci)","EHR or large-scale IT modernization change support","Stakeholder engagement and communications planning"], suggestedAction:"Respond to Sources Sought", winStrategy:"Position as Prosci-certified OCM specialist with ADKAR expertise tailored to healthcare IT transitions." }},
-  { noticeId:"d2", title:"Change Readiness Assessment and Training Program", type:"Sources Sought", department:"OFFICE OF PERSONNEL MANAGEMENT", subTier:"OPM Office of the Director", postedDate:"2026-04-09", responseDeadLine:"2026-05-10T17:00:00", naicsCode:"541611", _score:96, _analysis:{ relevanceScore:96, priority:"HIGH", whyRelevant:"Change readiness assessments and training design are both named Delta service lines. OPM manages HR for the entire federal government — a dream client with government-wide influence.", keyRequirements:["Change readiness assessment design and delivery","Training program development and curriculum design","Federal workforce OCM support"], suggestedAction:"Respond to Sources Sought", winStrategy:"Highlight Prosci's validated change readiness tools and Delta's training design capabilities as a methodology-driven small business." }},
-  { noticeId:"d3", title:"Workforce Transformation and Stakeholder Engagement Services", type:"Presolicitation", department:"DEPARTMENT OF HEALTH AND HUMAN SERVICES", subTier:"Centers for Medicare and Medicaid Services", postedDate:"2026-04-08", responseDeadLine:"2026-05-20T17:00:00", naicsCode:"541611", _score:95, _analysis:{ relevanceScore:95, priority:"HIGH", whyRelevant:"Workforce transformation and stakeholder engagement are Delta's core competencies. CMS is undergoing significant restructuring making OCM support critical.", keyRequirements:["Workforce transformation strategy","Stakeholder engagement planning","Organizational change communications"], suggestedAction:"Submit capability statement", winStrategy:"Emphasize Delta's integrated approach combining workforce transition with structured stakeholder engagement frameworks." }},
-  { noticeId:"d4", title:"Leadership Development and OCM Consulting", type:"Presolicitation", department:"SOCIAL SECURITY ADMINISTRATION", subTier:"Office of Human Resources", postedDate:"2026-04-07", responseDeadLine:"2026-05-25T17:00:00", naicsCode:"541611", _score:93, _analysis:{ relevanceScore:93, priority:"HIGH", whyRelevant:"Leadership development combined with OCM is a strong fit for Delta. SSA is managing significant workforce changes and needs both tactical and strategic change support.", keyRequirements:["Leadership coaching and development","Organizational change management","Workforce transition planning"], suggestedAction:"Monitor for RFP", winStrategy:"Position Delta as a boutique firm offering personalized leadership-OCM integration that larger firms cannot match." }},
-  { noticeId:"d5", title:"Training Design and Curriculum Development", type:"Sources Sought", department:"DEPARTMENT OF VETERANS AFFAIRS", subTier:"Veterans Benefits Administration", postedDate:"2026-04-06", responseDeadLine:"2026-05-05T17:00:00", naicsCode:"541611", _score:88, _analysis:{ relevanceScore:88, priority:"HIGH", whyRelevant:"Training design and delivery is a core Delta capability. VA/VBA is a primary target agency with ongoing modernization creating continuous training needs.", keyRequirements:["Instructional design and curriculum development","Adult learning methodology","Federal training delivery"], suggestedAction:"Respond to Sources Sought", winStrategy:"Lead with Delta's ADKAR-aligned training design approach and ability to connect training directly to change adoption metrics." }},
-  { noticeId:"d6", title:"Federal Agency Reorganization Advisory Support", type:"Solicitation", department:"DEPARTMENT OF HOMELAND SECURITY", subTier:"CISA", postedDate:"2026-04-05", responseDeadLine:"2026-05-18T17:00:00", naicsCode:"541611", _score:72, _analysis:{ relevanceScore:72, priority:"MEDIUM", whyRelevant:"Agency reorganization support aligns with Delta's federal restructuring experience. DHS/CISA is a target agency undergoing active mission realignment.", keyRequirements:["Organizational restructuring advisory","Change impact assessment","Stakeholder communication planning"], suggestedAction:"Consider teaming", winStrategy:"Consider teaming with a DHS-experienced prime as subcontractor to gain entry while building past performance." }},
+  { noticeId:"d1", title:"Organizational Change Management Support for EHR Modernization", type:"Sources Sought", department:"DEPARTMENT OF VETERANS AFFAIRS", subTier:"Veterans Health Administration", postedDate:"2026-05-01", responseDeadLine:"2026-06-15T17:00:00", naicsCode:"541611", _score:97, _analysis:{ relevanceScore:97, priority:"HIGH", whyRelevant:"Exact match — OCM support for VHA EHR modernization. ADKAR methodology is purpose-built for large-scale IT-driven change. Delta's workforce transformation experience maps directly to clinical and administrative staff impacts.", keyRequirements:["Organizational change management methodology (ADKAR/Prosci)","EHR or large-scale IT modernization change support","Stakeholder engagement and communications planning"], suggestedAction:"Respond to Sources Sought", winStrategy:"Position as Prosci-certified OCM specialist with ADKAR expertise tailored to healthcare IT transitions." }},
+  { noticeId:"d2", title:"Change Readiness Assessment and Training Program", type:"Sources Sought", department:"OFFICE OF PERSONNEL MANAGEMENT", subTier:"OPM Office of the Director", postedDate:"2026-05-02", responseDeadLine:"2026-06-10T17:00:00", naicsCode:"541611", _score:96, _analysis:{ relevanceScore:96, priority:"HIGH", whyRelevant:"Change readiness assessments and training design are both named Delta service lines. OPM manages HR for the entire federal government — a dream client with government-wide influence.", keyRequirements:["Change readiness assessment design and delivery","Training program development and curriculum design","Federal workforce OCM support"], suggestedAction:"Respond to Sources Sought", winStrategy:"Highlight Prosci's validated change readiness tools and Delta's training design capabilities." }},
+  { noticeId:"d3", title:"Workforce Transformation and Stakeholder Engagement Services", type:"Presolicitation", department:"DEPARTMENT OF HEALTH AND HUMAN SERVICES", subTier:"Centers for Medicare and Medicaid Services", postedDate:"2026-05-03", responseDeadLine:"2026-06-20T17:00:00", naicsCode:"541611", _score:95, _analysis:{ relevanceScore:95, priority:"HIGH", whyRelevant:"Workforce transformation and stakeholder engagement are Delta's core competencies. CMS is undergoing significant restructuring making OCM support critical.", keyRequirements:["Workforce transformation strategy","Stakeholder engagement planning","Organizational change communications"], suggestedAction:"Submit capability statement", winStrategy:"Emphasize Delta's integrated approach combining workforce transition with structured stakeholder engagement frameworks." }},
+  { noticeId:"d4", title:"Leadership Development and OCM Consulting", type:"Presolicitation", department:"SOCIAL SECURITY ADMINISTRATION", subTier:"Office of Human Resources", postedDate:"2026-05-04", responseDeadLine:"2026-06-25T17:00:00", naicsCode:"541611", _score:93, _analysis:{ relevanceScore:93, priority:"HIGH", whyRelevant:"Leadership development combined with OCM is a strong fit for Delta. SSA is managing significant workforce changes and needs both tactical and strategic change support.", keyRequirements:["Leadership coaching and development","Organizational change management","Workforce transition planning"], suggestedAction:"Monitor for RFP", winStrategy:"Position Delta as a boutique firm offering personalized leadership-OCM integration that larger firms cannot match." }},
+  { noticeId:"d5", title:"Training Design and Curriculum Development", type:"Sources Sought", department:"DEPARTMENT OF VETERANS AFFAIRS", subTier:"Veterans Benefits Administration", postedDate:"2026-05-05", responseDeadLine:"2026-06-05T17:00:00", naicsCode:"541611", _score:88, _analysis:{ relevanceScore:88, priority:"HIGH", whyRelevant:"Training design and delivery is a core Delta capability. VA/VBA is a primary target agency with ongoing modernization creating continuous training needs.", keyRequirements:["Instructional design and curriculum development","Adult learning methodology","Federal training delivery"], suggestedAction:"Respond to Sources Sought", winStrategy:"Lead with Delta's ADKAR-aligned training design approach and ability to connect training directly to change adoption metrics." }},
+  { noticeId:"d6", title:"Federal Agency Reorganization Advisory Support", type:"Solicitation", department:"DEPARTMENT OF HOMELAND SECURITY", subTier:"CISA", postedDate:"2026-05-06", responseDeadLine:"2026-06-18T17:00:00", naicsCode:"541611", _score:72, _analysis:{ relevanceScore:72, priority:"MEDIUM", whyRelevant:"Agency reorganization support aligns with Delta's federal restructuring experience. DHS/CISA is a target agency undergoing active mission realignment.", keyRequirements:["Organizational restructuring advisory","Change impact assessment","Stakeholder communication planning"], suggestedAction:"Consider teaming", winStrategy:"Consider teaming with a DHS-experienced prime as subcontractor to gain entry while building past performance." }},
 ];
 
 const DEFAULT_DASHBOARD = {
-  gsaStatus:"Resubmission pending (TDR Refresh 31)",
   gsaOffer:"2585874", uei:"FNG3ZQ4ASEG5", naics:"541611",
   actions:[
     {id:1, text:"Withdraw GSA offer in eOffer (deadline ~Apr 24)", done:false, urgent:true},
@@ -38,19 +33,17 @@ const DEFAULT_DASHBOARD = {
     {id:7, text:"Contact VA OSDBU with capabilities statement", done:false, urgent:false},
   ],
   pipeline:[
-    {id:1, title:"VA EHR OCM Support", agency:"VA", stage:"Sources Sought", score:97, deadline:"2026-05-15"},
-    {id:2, title:"OPM Change Readiness", agency:"OPM", stage:"Sources Sought", score:96, deadline:"2026-05-10"},
-    {id:3, title:"HHS Workforce Transformation", agency:"HHS", stage:"Presolicitation", score:95, deadline:"2026-05-20"},
-    {id:4, title:"SSA Leadership & OCM", agency:"SSA", stage:"Presolicitation", score:93, deadline:"2026-05-25"},
+    {id:1, title:"VA EHR OCM Support", agency:"VA", stage:"Sources Sought", score:97, deadline:"2026-06-15"},
+    {id:2, title:"OPM Change Readiness", agency:"OPM", stage:"Sources Sought", score:96, deadline:"2026-06-10"},
+    {id:3, title:"HHS Workforce Transformation", agency:"HHS", stage:"Presolicitation", score:95, deadline:"2026-06-20"},
+    {id:4, title:"SSA Leadership & OCM", agency:"SSA", stage:"Presolicitation", score:93, deadline:"2026-06-25"},
   ]
 };
 
-async function callClaude(system, userMsg, maxTokens=2000) {
-  const body = { model:"claude-sonnet-4-20250514", max_tokens:maxTokens };
-  if (system) body.system = system;
-  body.messages = [{role:"user", content:userMsg}];
+async function callClaude(userMsg, maxTokens=1500) {
   const r = await fetch("https://api.anthropic.com/v1/messages", {
-    method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:maxTokens, messages:[{role:"user",content:userMsg}] })
   });
   const d = await r.json();
   return d.content?.find(c=>c.type==="text")?.text || "";
@@ -78,16 +71,16 @@ export default function GovReady() {
   const [samKey, setSamKey] = useState("");
   const [samKeyInput, setSamKeyInput] = useState("");
   const [showKeyPanel, setShowKeyPanel] = useState(false);
-  const [samOpps, setSamOpps] = useState(()=>{try{return JSON.parse(localStorage.getItem(SAM_RESULTS_STORE)||"[]")}catch{return []}});
+  const [samOpps, setSamOpps] = useState([]);
   const [samLoading, setSamLoading] = useState(false);
   const [samStatus, setSamStatus] = useState("");
-  const [samLastRun, setSamLastRun] = useState(()=>localStorage.getItem(SAM_LASTRUN_STORE)||"");
+  const [samLastRun, setSamLastRun] = useState("");
   const [samFilter, setSamFilter] = useState("ALL");
   const [samSelected, setSamSelected] = useState(null);
   const [samTab, setSamTab] = useState("list");
   const [draft, setDraft] = useState("");
   const [draftLoading, setDraftLoading] = useState(false);
-  const [dashboard, setDashboard] = useState(()=>{try{return JSON.parse(localStorage.getItem(DASHBOARD_STORE)||"null")||DEFAULT_DASHBOARD}catch{return DEFAULT_DASHBOARD}});
+  const [dashboard, setDashboard] = useState(DEFAULT_DASHBOARD);
   const [capForm, setCapForm] = useState({agency:"",scope:"",differentiator:""});
   const [capResult, setCapResult] = useState("");
   const [capLoading, setCapLoading] = useState(false);
@@ -96,8 +89,7 @@ export default function GovReady() {
   const [rfpLoading, setRfpLoading] = useState(false);
   const [demoMode, setDemoMode] = useState(false);
 
-  const saveDashboard = (d) => { setDashboard(d); localStorage.setItem(DASHBOARD_STORE,JSON.stringify(d)); };
-  const toggleAction = (id) => saveDashboard({...dashboard, actions:dashboard.actions.map(a=>a.id===id?{...a,done:!a.done}:a)});
+  const toggleAction = (id) => setDashboard(d=>({...d,actions:d.actions.map(a=>a.id===id?{...a,done:!a.done}:a)}));
 
   const saveSamKey = () => {
     if (!samKeyInput.trim()) return;
@@ -109,38 +101,11 @@ export default function GovReady() {
   const runDemo = () => {
     setDemoMode(true);
     setSamOpps(DEMO_OPPS);
-    const ts = new Date().toLocaleString();
-    setSamLastRun(ts);
+    setSamLastRun(new Date().toLocaleString());
     setSamStatus("Demo mode — showing sample opportunities. Add your SAM.gov API key for live data.");
   };
 
-  const runSamScan = useCallback(async () => {
-    if (!samKey) { setShowKeyPanel(true); setSamStatus("Please enter your SAM.gov API key first."); return; }
-    setSamLoading(true); setDemoMode(false);
-    setSamStatus("Connecting to SAM.gov...");
-    try {
-      const now = new Date();
-      const from = new Date(now); from.setDate(from.getDate()-7);
-      const fromStr = from.toISOString().split("T")[0].replace(/-/g,"/");
-      const toStr = now.toISOString().split("T")[0].replace(/-/g,"/");
-      const url = `https://api.sam.gov/prod/opportunities/v2/search?api_key=${samKey}&limit=50&postedFrom=${fromStr}&postedTo=${toStr}&naics=541611&active=true`;
-      const r = await fetch(url);
-      if (!r.ok) throw new Error(`SAM.gov error ${r.status} — verify your API key is active`);
-      const data = await r.json();
-      const raw = data.opportunitiesData || [];
-      if (!raw.length) { setSamStatus("No new opportunities in last 7 days. Try again tomorrow or broaden your search."); setSamLoading(false); return; }
-      setSamStatus(`Found ${raw.length} opportunities. Scoring...`);
-      const scored = raw.map(o=>({...o, _score: quickScore(o), _analysis: null}));
-      scored.sort((a,b)=>(b._score||0)-(a._score||0));
-      setSamOpps(scored);
-      localStorage.setItem(SAM_RESULTS_STORE, JSON.stringify(scored));
-      const ts = new Date().toLocaleString(); setSamLastRun(ts); localStorage.setItem(SAM_LASTRUN_STORE, ts);
-      setSamStatus(`Complete — ${scored.length} opportunities found and scored.`);
-    } catch(e) { setSamStatus(`Error: ${e.message}`); }
-    finally { setSamLoading(false); }
-  }, [samKey]);
-
-  function quickScore(o) {
+  const quickScore = (o) => {
     let s = 0;
     const t = (o.title||"").toLowerCase();
     const d = (o.department||"").toUpperCase();
@@ -150,19 +115,49 @@ export default function GovReady() {
     if (["transformation","transition","restructur","adkar"].some(k=>t.includes(k))) s+=20;
     if (["training","stakeholder","engagement","development"].some(k=>t.includes(k))) s+=10;
     return Math.min(s,95);
-  }
+  };
+
+  const runSamScan = useCallback(async () => {
+    if (!samKey || samKey.trim() === "") {
+      setShowKeyPanel(true);
+      setSamStatus("Please enter your SAM.gov API key first.");
+      return;
+    }
+    setSamLoading(true);
+    setDemoMode(false);
+    setSamStatus("Connecting to SAM.gov...");
+    try {
+      const now = new Date();
+      const from = new Date(now);
+      from.setDate(from.getDate()-7);
+      const fromStr = from.toISOString().split("T")[0].replace(/-/g,"/");
+      const toStr = now.toISOString().split("T")[0].replace(/-/g,"/");
+      const url = `https://api.sam.gov/prod/opportunities/v2/search?api_key=${samKey.trim()}&limit=50&postedFrom=${fromStr}&postedTo=${toStr}&naics=541611&active=true`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`SAM.gov error ${r.status} — verify your API key is active`);
+      const data = await r.json();
+      const raw = data.opportunitiesData || [];
+      if (!raw.length) { setSamStatus("No new opportunities in last 7 days. Try again tomorrow."); setSamLoading(false); return; }
+      setSamStatus(`Found ${raw.length} opportunities. Scoring...`);
+      const scored = raw.map(o=>({...o, _score: quickScore(o), _analysis: null}));
+      scored.sort((a,b)=>(b._score||0)-(a._score||0));
+      setSamOpps(scored);
+      setSamLastRun(new Date().toLocaleString());
+      setSamStatus(`Complete — ${scored.length} opportunities found and scored.`);
+    } catch(e) {
+      setSamStatus(`Error: ${e.message}`);
+    } finally {
+      setSamLoading(false);
+    }
+  }, [samKey]);
 
   const generateDraft = useCallback(async (opp) => {
     setDraftLoading(true); setDraft(""); setSamTab("draft");
     try {
-      const text = await callClaude(null,
-        `Write a professional federal Sources Sought capability statement response for this opportunity on behalf of a change management consulting firm.
-
-OPPORTUNITY: ${opp.title} | ${opp.department} | ${opp.type} | NAICS ${opp.naicsCode}
-
-FIRM PROFILE: Small change management consulting firm. Core capabilities: ADKAR/Prosci OCM, workforce transformation, stakeholder engagement, change readiness assessments, training design and delivery, federal agency reorganization support. GSA MAS Schedule SIN 541611 pending. Target agencies: VA, HHS/CMS, DHS, OPM, SSA, DoD.
-
-Write a 1-page capability statement with: company overview, relevant capabilities tied to this opportunity, why uniquely qualified, key differentiators, and call to action. Professional, confident, mission-aware federal tone.`, 1500);
+      const text = await callClaude(`Write a professional federal Sources Sought capability statement response for this opportunity on behalf of a change management consulting firm.
+OPPORTUNITY: ${opp.title} | ${opp.department} | ${opp.type}
+FIRM: Small change management consulting firm. Capabilities: ADKAR/Prosci OCM, workforce transformation, stakeholder engagement, change readiness assessments, training design, federal reorganization support. GSA MAS 541611 pending.
+Write a 1-page response with: company overview, relevant capabilities, why uniquely qualified, differentiators, call to action. Professional federal tone.`);
       setDraft(text);
     } catch(e) { setDraft("Error generating draft. Please try again."); }
     finally { setDraftLoading(false); }
@@ -172,13 +167,12 @@ Write a 1-page capability statement with: company overview, relevant capabilitie
     if (!capForm.agency) return;
     setCapLoading(true); setCapResult("");
     try {
-      const text = await callClaude(null,
-        `Generate a professional federal capability statement for a change management consulting firm targeting ${capForm.agency}.
-Opportunity/scope: ${capForm.scope||"general change management consulting"}
-Key differentiator: ${capForm.differentiator||"ADKAR/Prosci certified, small business agility, federal mission focus"}
-Include: company overview, core competencies (ADKAR, OCM, workforce transformation, stakeholder engagement, training design), differentiators, NAICS 541611, contact block placeholder. Professional federal tone.`, 1500);
+      const text = await callClaude(`Generate a professional federal capability statement for a change management consulting firm targeting ${capForm.agency}.
+Scope: ${capForm.scope||"general change management consulting"}
+Differentiator: ${capForm.differentiator||"ADKAR/Prosci certified, small business agility, federal mission focus"}
+Include: company overview, core competencies (ADKAR, OCM, workforce transformation, stakeholder engagement, training design), differentiators, NAICS 541611, contact block placeholder.`);
       setCapResult(text);
-    } catch(e) { setCapResult("Error generating statement. Please try again."); }
+    } catch(e) { setCapResult("Error generating. Please try again."); }
     finally { setCapLoading(false); }
   };
 
@@ -186,13 +180,11 @@ Include: company overview, core competencies (ADKAR, OCM, workforce transformati
     if (!rfpForm.title||!rfpForm.agency) return;
     setRfpLoading(true); setRfpResult("");
     try {
-      const text = await callClaude(null,
-        `Write a complete federal proposal response for this opportunity on behalf of a small change management consulting firm.
-Title: ${rfpForm.title} | Agency: ${rfpForm.agency} | Scope: ${rfpForm.scope} | Period: ${rfpForm.period||"12 months + options"} | Small Business: ${rfpForm.smallBiz} | Incumbent: ${rfpForm.incumbent||"Unknown"}
-Firm capabilities: ADKAR/Prosci OCM, workforce transformation, stakeholder engagement, change readiness, training design, federal reorganization support.
-Include: Executive Summary, Technical Approach (ADKAR methodology, phased approach), Management Approach, Past Performance placeholder, Price narrative placeholder. Federal proposal best practices throughout.`, 3000);
+      const text = await callClaude(`Write a complete federal proposal for: ${rfpForm.title} | ${rfpForm.agency} | ${rfpForm.scope} | Period: ${rfpForm.period||"12 months"} | Small Biz: ${rfpForm.smallBiz}
+Firm: Change management consulting. Capabilities: ADKAR/Prosci OCM, workforce transformation, stakeholder engagement, change readiness, training design.
+Include: Executive Summary, Technical Approach, Management Approach, Past Performance placeholder, Price narrative placeholder.`, 3000);
       setRfpResult(text);
-    } catch(e) { setRfpResult("Error generating proposal. Please try again."); }
+    } catch(e) { setRfpResult("Error generating. Please try again."); }
     finally { setRfpLoading(false); }
   };
 
@@ -209,34 +201,31 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
   return (
     <div style={{display:"flex",height:"100vh",fontFamily:"'DM Mono','Courier New',monospace",background:"#0A0A0F",color:"#E8E6E0",overflow:"hidden"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@400;500;600&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
-        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2A2A3A;border-radius:2px}
-        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;border-radius:6px;transition:all .15s;font-size:12px;letter-spacing:.06em;color:#555;border:1px solid transparent}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#2A2A3A;border-radius:2px}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;border-radius:6px;transition:all .15s;font-size:12px;color:#555;border:1px solid transparent}
         .nav-item:hover{color:#E8E6E0;background:#14141E}
         .nav-item.active{color:#C8F0D0;background:#0D1F14;border-color:#1A3A24}
-        .module{flex:1;overflow-y:auto;padding:28px 32px}
+        .module{flex:1;overflow-y:auto;padding:28px 32px;background:#0A0A0F}
         .card{background:#0F0F1A;border:1px solid #1E1E2E;border-radius:10px;padding:20px}
         .card-sm{background:#0F0F1A;border:1px solid #1E1E2E;border-radius:8px;padding:14px 16px}
         .label{font-size:10px;letter-spacing:.1em;color:#444;margin-bottom:5px;text-transform:uppercase}
         .muted{font-size:12px;color:#666;line-height:1.6;font-family:'DM Sans',sans-serif}
         .btn-primary{background:#1A4D2E;border:1px solid #2D7A4A;border-radius:6px;color:#C8F0D0;cursor:pointer;padding:9px 18px;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.06em;transition:all .15s}
-        .btn-primary:hover{background:#1F5C36}
-        .btn-primary:disabled{opacity:.35;cursor:not-allowed}
+        .btn-primary:hover{background:#1F5C36}.btn-primary:disabled{opacity:.35;cursor:not-allowed}
         .btn-ghost{background:transparent;border:1px solid #1E1E2E;border-radius:6px;color:#777;cursor:pointer;padding:8px 14px;font-family:'DM Mono',monospace;font-size:11px;transition:all .15s}
         .btn-ghost:hover{border-color:#333;color:#E8E6E0}
         .opp-row{padding:14px 16px;border-bottom:1px solid #141420;cursor:pointer;transition:background .1s}
-        .opp-row:hover{background:#0D0D18}
-        .opp-row.sel{background:#0D1A14;border-left:2px solid #2D7A4A}
-        .filter-btn{background:transparent;border:1px solid #1E1E2E;border-radius:4px;color:#555;cursor:pointer;padding:3px 10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.06em;transition:all .1s}
+        .opp-row:hover{background:#0D0D18}.opp-row.sel{background:#0D1A14;border-left:2px solid #2D7A4A}
+        .filter-btn{background:transparent;border:1px solid #1E1E2E;border-radius:4px;color:#555;cursor:pointer;padding:3px 10px;font-family:'DM Mono',monospace;font-size:10px;transition:all .1s}
         .filter-btn.on{background:#0D1F14;border-color:#2D7A4A;color:#C8F0D0}
-        .tab-btn{background:transparent;border:none;border-bottom:2px solid transparent;color:#555;cursor:pointer;padding:8px 16px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em;transition:all .15s}
+        .tab-btn{background:transparent;border:none;border-bottom:2px solid transparent;color:#555;cursor:pointer;padding:8px 16px;font-family:'DM Mono',monospace;font-size:11px;transition:all .15s}
         .tab-btn.on{color:#C8F0D0;border-bottom-color:#2D7A4A}
         .bar{height:2px;background:#1E1E2E;border-radius:1px;overflow:hidden;margin-top:8px}
         .bar-fill{height:100%;border-radius:1px}
         .inp{width:100%;background:#0A0A0F;border:1px solid #1E1E2E;border-radius:6px;padding:9px 12px;font-family:'DM Mono',monospace;font-size:12px;color:#E8E6E0;transition:border-color .15s}
-        .inp:focus{outline:none;border-color:#2D7A4A}
-        .inp::placeholder{color:#333}
+        .inp:focus{outline:none;border-color:#2D7A4A}.inp::placeholder{color:#333}
         textarea.inp{resize:vertical;line-height:1.7;font-size:11px}
         .action-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #0F0F18}
         .action-row:last-child{border-bottom:none}
@@ -274,7 +263,7 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
       <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
 
         {/* DASHBOARD */}
-        {page==="dashboard" && (
+        {page==="dashboard"&&(
           <div className="module">
             <div style={{marginBottom:28}}>
               <div style={{fontSize:20,fontWeight:500,color:"#E8E6E0"}}>Dashboard</div>
@@ -283,11 +272,8 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
             <div style={{marginBottom:24}}>
               <div style={{fontSize:10,letterSpacing:".14em",color:"#444",marginBottom:12,textTransform:"uppercase"}}>GSA Schedule Status</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10,marginBottom:10}}>
-                {[{label:"Offer ID",val:dashboard.gsaOffer},{label:"UEI",val:dashboard.uei},{label:"NAICS",val:dashboard.naics},{label:"Expected Award",val:"Late Summer 2026"}].map((s,i)=>(
-                  <div key={i} className="stat-card">
-                    <div className="label">{s.label}</div>
-                    <div style={{fontSize:13,fontWeight:500,color:"#C8F0D0"}}>{s.val}</div>
-                  </div>
+                {[{l:"Offer ID",v:dashboard.gsaOffer},{l:"UEI",v:dashboard.uei},{l:"NAICS",v:dashboard.naics},{l:"Expected Award",v:"Late Summer 2026"}].map((s,i)=>(
+                  <div key={i} className="stat-card"><div className="label">{s.l}</div><div style={{fontSize:13,fontWeight:500,color:"#C8F0D0"}}>{s.v}</div></div>
                 ))}
               </div>
               <div className="card-sm" style={{display:"flex",alignItems:"center",gap:12}}>
@@ -299,7 +285,7 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
               <div>
                 <div style={{fontSize:10,letterSpacing:".14em",color:"#444",marginBottom:12,textTransform:"uppercase"}}>Action Items</div>
                 <div className="card">
-                  {urgentActions.length>0 && <div style={{marginBottom:12}}>
+                  {urgentActions.length>0&&<div style={{marginBottom:12}}>
                     <div style={{fontSize:10,color:"#EF4444",letterSpacing:".1em",marginBottom:8}}>URGENT</div>
                     {urgentActions.map(a=>(
                       <div key={a.id} className="action-row">
@@ -308,7 +294,7 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
                       </div>
                     ))}
                   </div>}
-                  {pendingActions.length>0 && <div>
+                  {pendingActions.length>0&&<div>
                     <div style={{fontSize:10,color:"#444",letterSpacing:".1em",marginBottom:8}}>THIS WEEK</div>
                     {pendingActions.map(a=>(
                       <div key={a.id} className="action-row">
@@ -324,7 +310,7 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
                 <div className="card">
                   {dashboard.pipeline.map(p=>{
                     const dl=daysLeft(p.deadline);
-                    return (
+                    return(
                       <div key={p.id} className="pipeline-row">
                         <div style={{flex:1}}>
                           <div style={{fontSize:12,fontWeight:500,color:"#E8E6E0",marginBottom:3,fontFamily:"'DM Sans',sans-serif"}}>{p.title}</div>
@@ -347,7 +333,7 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
         )}
 
         {/* SAM MONITOR */}
-        {page==="sam" && (
+        {page==="sam"&&(
           <div style={{display:"flex",flexDirection:"column",height:"100%",overflow:"hidden"}}>
             <div style={{padding:"16px 24px",borderBottom:"1px solid #141420",display:"flex",justifyContent:"space-between",alignItems:"center",background:"#07070F",flexShrink:0}}>
               <div>
@@ -363,12 +349,12 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
 
             {showKeyPanel&&(
               <div style={{background:"#0A0A0F",borderBottom:"1px solid #141420",padding:"10px 24px",flexShrink:0}}>
-                <div style={{fontSize:10,color:"#444",marginBottom:6,letterSpacing:".08em"}}>SAM.GOV PUBLIC API KEY</div>
+                <div style={{fontSize:10,color:"#444",marginBottom:6,letterSpacing:".08em"}}>SAM.GOV PUBLIC API KEY — get from sam.gov → Account Details → Public API Keys</div>
                 <div style={{display:"flex",gap:8,maxWidth:520}}>
-                  <input type="password" className="inp" placeholder="SAM-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" value={samKeyInput} onChange={e=>setSamKeyInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&saveSamKey()} />
+                  <input type="text" className="inp" placeholder="SAM-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" value={samKeyInput} onChange={e=>setSamKeyInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&saveSamKey()} autoComplete="off" autoCorrect="off" spellCheck="false" />
                   <button className="btn-primary" style={{whiteSpace:"nowrap",padding:"8px 14px"}} onClick={saveSamKey}>Save</button>
                 </div>
-                {samKey&&<div style={{fontSize:10,color:"#2D7A4A",marginTop:5}}>✓ Key saved</div>}
+                {samKey&&<div style={{fontSize:10,color:"#2D7A4A",marginTop:5}}>✓ Key active for this session</div>}
               </div>
             )}
 
@@ -406,15 +392,17 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
                     {samFiltered.length===0?(
                       <div style={{textAlign:"center",padding:"60px 20px",color:"#444",fontSize:12}}>
                         <div style={{fontSize:28,marginBottom:12,opacity:.3}}>◎</div>
-                        <div>Click <strong style={{color:"#666"}}>Demo</strong> to preview or <strong style={{color:"#666"}}>Run Scan</strong> with your API key</div>
+                        <div style={{marginBottom:8,fontWeight:600,color:"#666"}}>No opportunities loaded</div>
+                        <div>Click <strong style={{color:"#C8F0D0"}}>Demo</strong> to preview sample data</div>
+                        <div style={{marginTop:4}}>or click <strong style={{color:"#C8F0D0"}}>⚙ Add Key</strong> then <strong style={{color:"#C8F0D0"}}>Run Scan</strong></div>
                       </div>
                     ):samFiltered.map(opp=>{
-                      const sc=opp._score||0, an=opp._analysis;
+                      const sc=opp._score||0,an=opp._analysis;
                       const pr=an?.priority||(sc>=70?"HIGH":sc>=45?"MEDIUM":"LOW");
                       const ps=priorityStyle(pr);
                       const dl=daysLeft(opp.responseDeadLine);
                       const isSel=samSelected?.noticeId===opp.noticeId;
-                      return (
+                      return(
                         <div key={opp.noticeId} className={`opp-row${isSel?" sel":""}`} onClick={()=>setSamSelected(opp)}>
                           <div style={{display:"flex",justifyContent:"space-between",gap:8,marginBottom:5}}>
                             <div style={{fontSize:12,fontWeight:500,color:"#E8E6E0",lineHeight:1.4,flex:1,fontFamily:"'DM Sans',sans-serif"}}>{opp.title}</div>
@@ -439,8 +427,8 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
                       <div style={{fontSize:28,marginBottom:12,opacity:.2}}>→</div>Select an opportunity
                     </div>
                   ):(()=>{
-                    const an=samSelected._analysis, sc=samSelected._score||0, dl=daysLeft(samSelected.responseDeadLine);
-                    return (
+                    const an=samSelected._analysis,sc=samSelected._score||0,dl=daysLeft(samSelected.responseDeadLine);
+                    return(
                       <div>
                         <div style={{marginBottom:16}}>
                           <div style={{fontSize:14,fontWeight:500,color:"#E8E6E0",lineHeight:1.5,marginBottom:6,fontFamily:"'DM Sans',sans-serif"}}>{samSelected.title}</div>
@@ -501,10 +489,8 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
                 <div style={{fontSize:10,letterSpacing:".14em",color:"#444",marginBottom:16,textTransform:"uppercase"}}>Opportunity Details</div>
                 <div style={{display:"flex",flexDirection:"column",gap:12}}>
                   {[{label:"Target Agency *",key:"agency",ph:"e.g. Department of Veterans Affairs"},{label:"Opportunity / Scope",key:"scope",ph:"e.g. EHR modernization change management support"},{label:"Key Differentiator",key:"differentiator",ph:"e.g. Prosci-certified, 10+ years federal OCM"}].map(f=>(
-                    <div key={f.key}>
-                      <div className="label" style={{marginBottom:5}}>{f.label}</div>
-                      <input className="inp" placeholder={f.ph} value={capForm[f.key]} onChange={e=>setCapForm(p=>({...p,[f.key]:e.target.value}))}/>
-                    </div>
+                    <div key={f.key}><div className="label" style={{marginBottom:5}}>{f.label}</div>
+                    <input className="inp" placeholder={f.ph} value={capForm[f.key]} onChange={e=>setCapForm(p=>({...p,[f.key]:e.target.value}))}/></div>
                   ))}
                   <button className="btn-primary" style={{marginTop:4}} onClick={generateCapStat} disabled={capLoading||!capForm.agency}>{capLoading?"Generating...":"✦ Generate Capability Statement"}</button>
                 </div>
@@ -512,10 +498,9 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
               <div>
                 <div style={{fontSize:10,letterSpacing:".14em",color:"#444",marginBottom:16,textTransform:"uppercase"}}>Generated Statement</div>
                 {capLoading?<div className="muted" style={{padding:"40px 0"}}>Generating with Claude AI...</div>
-                :capResult?<>
-                  <textarea className="inp" value={capResult} onChange={e=>setCapResult(e.target.value)} rows={22}/>
-                  <button className="btn-primary" style={{marginTop:10}} onClick={()=>navigator.clipboard.writeText(capResult)}>Copy to clipboard</button>
-                </>:<div className="card" style={{textAlign:"center",padding:"60px 20px"}}><div style={{fontSize:24,marginBottom:12,opacity:.2}}>◇</div><div className="muted">Fill in the details and click Generate</div></div>}
+                :capResult?<><textarea className="inp" value={capResult} onChange={e=>setCapResult(e.target.value)} rows={22}/>
+                  <button className="btn-primary" style={{marginTop:10}} onClick={()=>navigator.clipboard.writeText(capResult)}>Copy to clipboard</button></>
+                :<div className="card" style={{textAlign:"center",padding:"60px 20px"}}><div style={{fontSize:24,marginBottom:12,opacity:.2}}>◇</div><div className="muted">Fill in the details and click Generate</div></div>}
               </div>
             </div>
           </div>
@@ -531,29 +516,24 @@ Include: Executive Summary, Technical Approach (ADKAR methodology, phased approa
                 <div style={{fontSize:10,letterSpacing:".14em",color:"#444",marginBottom:16,textTransform:"uppercase"}}>Opportunity Details</div>
                 <div style={{display:"flex",flexDirection:"column",gap:12}}>
                   {[{label:"Opportunity Title *",key:"title",ph:"e.g. OCM Support for EHR Modernization"},{label:"Agency *",key:"agency",ph:"e.g. Department of Veterans Affairs"},{label:"Scope of Work",key:"scope",ph:"Brief description of work required"},{label:"Period of Performance",key:"period",ph:"e.g. 12 months base + 2 option years"},{label:"Incumbent (if known)",key:"incumbent",ph:"e.g. Booz Allen Hamilton or Unknown"}].map(f=>(
-                    <div key={f.key}>
-                      <div className="label" style={{marginBottom:5}}>{f.label}</div>
-                      <input className="inp" placeholder={f.ph} value={rfpForm[f.key]} onChange={e=>setRfpForm(p=>({...p,[f.key]:e.target.value}))}/>
-                    </div>
+                    <div key={f.key}><div className="label" style={{marginBottom:5}}>{f.label}</div>
+                    <input className="inp" placeholder={f.ph} value={rfpForm[f.key]} onChange={e=>setRfpForm(p=>({...p,[f.key]:e.target.value}))}/></div>
                   ))}
-                  <div>
-                    <div className="label" style={{marginBottom:5}}>SMALL BUSINESS SET-ASIDE</div>
-                    <div style={{display:"flex",gap:8}}>
-                      {["yes","no","unknown"].map(v=>(
-                        <button key={v} className={`filter-btn${rfpForm.smallBiz===v?" on":""}`} onClick={()=>setRfpForm(p=>({...p,smallBiz:v}))} style={{textTransform:"uppercase"}}>{v}</button>
-                      ))}
-                    </div>
-                  </div>
+                  <div><div className="label" style={{marginBottom:5}}>SMALL BUSINESS SET-ASIDE</div>
+                  <div style={{display:"flex",gap:8}}>
+                    {["yes","no","unknown"].map(v=>(
+                      <button key={v} className={`filter-btn${rfpForm.smallBiz===v?" on":""}`} onClick={()=>setRfpForm(p=>({...p,smallBiz:v}))} style={{textTransform:"uppercase"}}>{v}</button>
+                    ))}
+                  </div></div>
                   <button className="btn-primary" style={{marginTop:4}} onClick={generateRFP} disabled={rfpLoading||!rfpForm.title||!rfpForm.agency}>{rfpLoading?"Generating...":"✦ Generate Proposal"}</button>
                 </div>
               </div>
               <div>
                 <div style={{fontSize:10,letterSpacing:".14em",color:"#444",marginBottom:16,textTransform:"uppercase"}}>Generated Proposal</div>
                 {rfpLoading?<div className="muted" style={{padding:"40px 0"}}>Generating full proposal with Claude AI...</div>
-                :rfpResult?<>
-                  <textarea className="inp" value={rfpResult} onChange={e=>setRfpResult(e.target.value)} rows={32}/>
-                  <button className="btn-primary" style={{marginTop:10}} onClick={()=>navigator.clipboard.writeText(rfpResult)}>Copy to clipboard</button>
-                </>:<div className="card" style={{textAlign:"center",padding:"60px 20px"}}><div style={{fontSize:24,marginBottom:12,opacity:.2}}>◻</div><div className="muted">Fill in opportunity details and click Generate</div></div>}
+                :rfpResult?<><textarea className="inp" value={rfpResult} onChange={e=>setRfpResult(e.target.value)} rows={32}/>
+                  <button className="btn-primary" style={{marginTop:10}} onClick={()=>navigator.clipboard.writeText(rfpResult)}>Copy to clipboard</button></>
+                :<div className="card" style={{textAlign:"center",padding:"60px 20px"}}><div style={{fontSize:24,marginBottom:12,opacity:.2}}>◻</div><div className="muted">Fill in opportunity details and click Generate</div></div>}
               </div>
             </div>
           </div>
