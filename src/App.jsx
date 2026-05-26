@@ -479,7 +479,7 @@ Include: Executive Summary, Technical Approach, Management Approach, Past Perfor
                     <button className="btn-primary" onClick={()=>navigator.clipboard.writeText(draft)}>Copy</button>
                     <button className="btn-ghost" onClick={()=>{setDraft("");setSamTab("list");}}>← Back</button>
                   </div>
-                </>:draftOpp?null:<div className="muted">Select an opportunity and click "✦ Draft Response" to generate a capability statement.</div>}
+                </>:<div className="muted">{draftOpp?"Generating your draft...":"Select an opportunity and click \"✦ Draft Response\" to generate a capability statement."}</div>
               </div>
             )}
           </div>
