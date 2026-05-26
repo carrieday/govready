@@ -98,12 +98,15 @@ export default function GovReady() {
   };
 
   const runDemo = () => {
-    setDemoMode(true);
-    setSamOpps([]);
-    setTimeout(() => setSamOpps(DEMO_OPPS), 50);
-    setSamLastRun(new Date().toLocaleString());
-    setSamStatus("Demo mode — showing sample opportunities. Add your SAM.gov API key for live data.");
-  };
+  setSamSelected(null);
+  setDraft("");
+  setSamTab("list");
+  setSamFilter("ALL");
+  setDemoMode(true);
+  setSamOpps(DEMO_OPPS);
+  setSamLastRun(new Date().toLocaleString());
+  setSamStatus("Demo mode — showing sample opportunities. Add your SAM.gov API key for live data.");
+};
 
   const quickScore = (o) => {
     let s = 0;
