@@ -471,19 +471,12 @@ Include: Executive Summary, Technical Approach, Management Approach, Past Perfor
 
             {samTab==="draft"&&(
               <div style={{flex:1,overflowY:"auto",padding:24}}>
-                <div className="label" style={{marginBottom:12}}>{draftOpp?`DRAFT — ${draftOpp.title}`:"SELECT AN OPPORTUNITY FIRST"}
-                {draftLoading?<div className="muted" style={{padding:"40px 0"}}>Generating with Claude AI...</div>
-                :draft?<>
-                  <textarea className="inp" value={draft} onChange={e=>setDraft(e.target.value)} rows={28}/>
-                  <div style={{display:"flex",gap:8,marginTop:10}}>
-                    <button className="btn-primary" onClick={()=>navigator.clipboard.writeText(draft)}>Copy</button>
-                    <button className="btn-ghost" onClick={()=>{setDraft("");setSamTab("list");}}>← Back</button>
-                  </div>
-                </>:<div className="muted">{draftOpp?"Generating your draft...":"Select an opportunity and click \"✦ Draft Response\" to generate a capability statement."}</div>
+                <div className="label" style={{marginBottom:12}}>{draftOpp?`DRAFT — ${draftOpp.title}`:"SELECT AN OPPORTUNITY FIRST"}</div>
+                {draftLoading&&<div className="muted" style={{padding:"40px 0"}}>Generating with Claude AI...</div>}
+                {!draftLoading&&draft&&<div><textarea className="inp" value={draft} onChange={e=>setDraft(e.target.value)} rows={28}/><div style={{display:"flex",gap:8,marginTop:10}}><button className="btn-primary" onClick={()=>navigator.clipboard.writeText(draft)}>Copy</button><button className="btn-ghost" onClick={()=>{setDraft("");setSamTab("list");}}>← Back</button></div></div>}
+                {!draftLoading&&!draft&&<div className="muted">Select an opportunity and click Draft Response to generate a capability statement.</div>}
               </div>
             )}
-          </div>
-        )}
 
         {/* CAPABILITY STATEMENT */}
         {page==="capstat"&&(
