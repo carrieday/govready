@@ -132,7 +132,7 @@ export default function GovReady() {
       from.setDate(from.getDate()-7);
       const fromStr = from.toISOString().split("T")[0].replace(/-/g,"/");
       const toStr = now.toISOString().split("T")[0].replace(/-/g,"/");
-      const url = `https://api.sam.gov/prod/opportunities/v2/search?api_key=${samKey.trim()}&limit=50&postedFrom=${fromStr}&postedTo=${toStr}&naics=541611&active=true`;
+      const url = `https://api.sam.gov/opportunities/v2/search?api_key=${samKey.trim()}&limit=50&postedFrom=${fromStr}&postedTo=${toStr}&naics=541611&active=true`;
       const r = await fetch(url);
       if (!r.ok) throw new Error(`SAM.gov error ${r.status} — verify your API key is active`);
       const data = await r.json();
